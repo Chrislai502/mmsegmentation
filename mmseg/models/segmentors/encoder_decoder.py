@@ -281,9 +281,24 @@ class EncoderDecoder(BaseSegmentor):
                 # the output of encode_decode is seg logits tensor map
                 # with shape [N, C, H, W]
                 crop_seg_logit = self.encode_decode(crop_img, batch_img_metas)
+                # Print all the sizes of the input into this function
+                # print(crop_img.shape)
+                # print(crop_seg_logit.shape)
+                # print(f"preds.shape: {preds.shape}, crop_seg_logit.shape: {crop_seg_logit.shape}")
+                # print(f"x1: {x1}, x2: {x2}, preds.shape[3]: {preds.shape[3]}")
+                # print(f"y1: {y1}, y2: {y2}, preds.shape[2]: {preds.shape[2]}")
+                # if x2 > preds.shape[3]:
+                #     x2 = preds.shape[3]
+                # if y2 > preds.shape[2]:
+                #     y2 = preds.shape[2]
+                # temp = F.pad(crop_seg_logit,
+                #                (int(x1), int(preds.shape[3] - x2), 
+                #                 int(y1), int(preds.shape[2] - y2)))
+                # print(f"temp.shape: {temp.shape}")
+                # preds += crop_seg_logit
                 preds += F.pad(crop_seg_logit,
-                               (int(x1), int(preds.shape[3] - x2), int(y1),
-                                int(preds.shape[2] - y2)))
+                               (int(x1), int(preds.shape[3] - x2), 
+                                int(y1), int(preds.shape[2] - y2)))
 
                 count_mat[:, :, y1:y2, x1:x2] += 1
         assert (count_mat == 0).sum() == 0

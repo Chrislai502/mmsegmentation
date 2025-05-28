@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 
 from mmengine.model import revert_sync_batchnorm

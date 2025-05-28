@@ -83,6 +83,7 @@ def main():
     parser.add_argument('--input_folder', help='Path to the folder containing input images. Contains .png images as the data within each folder.')
     parser.add_argument('--output_folder', help='Output folder that will save the stats + metadata.')
     parser.add_argument('--filter_string', default=None, help='The path must also contain the keyword (eg image02)')
+    parser.add_argument('--exclude_filter_strings', nargs='*', default=None, help='List of strings. Paths containing any of these will be excluded.')
     parser.add_argument('--config', default=None, help='Config file')
     parser.add_argument('--checkpoint', default=None, help='Checkpoint file')
     parser.add_argument('--device', default='cuda:0', help='Device used for inference')
@@ -101,6 +102,13 @@ def main():
     all_png_paths = get_all_paths_of_png(input_folder)
     if args.filter_string:
         all_png_paths = [path for path in all_png_paths if args.filter_string in path]
+
+    # Exclude paths that contain any of the exclude_filter_strings
+    if args.exclude_filter_strings:
+        all_png_paths = [
+            path for path in all_png_paths
+            if not any(exclude in path for exclude in args.exclude_filter_strings)
+        ]
 
     # Initialize the model
     model = init_model(args.config, args.checkpoint, device=args.device)
